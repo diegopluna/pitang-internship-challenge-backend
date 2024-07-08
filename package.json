@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/diegopluna/pitang-internship-challenge-backend/issues"
   },
-  "homepage": "https://github.com/diegopluna/pitang-internship-challenge-backend#readme"
+  "homepage": "https://github.com/diegopluna/pitang-internship-challenge-backend#readme",
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "typescript": "^5.5.3"
+  }
 }
