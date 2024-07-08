@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { createAppointmentValidator } from '@/validators/create-appointment-validator'
 import { format } from 'date-fns'
 
-describe('createAppointmentValidator', () => {
+describe('Create Appointment Validator', () => {
   it('should validate a valid input', () => {
     const validName = faker.person.fullName()
     const validBirthDay = format(faker.date.past({ years: 20 }), 'yyyy-MM-dd')
@@ -15,11 +15,7 @@ describe('createAppointmentValidator', () => {
       appointmentDate: validAppointmentDate,
     }
 
-    console.log(validInput)
-
     const result = createAppointmentValidator.safeParse(validInput)
-
-    console.log(result.data)
 
     expect(result.success).toEqual(true)
   })

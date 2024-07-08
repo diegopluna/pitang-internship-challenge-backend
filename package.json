@@ -16,7 +16,7 @@
     "test:ui": "vitest --ui",
     "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
     "test:install-prisma-environment": "npm link vitest-environment-prisma",
-    "test:unit": "vitest run --dir tests/validators",
+    "test:unit": "vitest run --dir tests/repositories && vitest run --dir tests/validators",
     "test:unit:watch": "vitest --dir tests/validators",
     "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment"
   },
