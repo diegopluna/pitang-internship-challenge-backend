@@ -79,7 +79,8 @@ export const createAppointmentValidator = z.object({
         return isAfter(date, currentHour)
       },
       {
-        message: 'The appointmentDate must be in the future.',
+        message:
+          'The appointmentDate must be in the future. Make sure you are using Unix timestamp in milliseconds.',
       },
     )
     .transform((timestamp) => {

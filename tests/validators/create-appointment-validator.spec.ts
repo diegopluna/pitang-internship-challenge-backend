@@ -128,7 +128,7 @@ describe('Create Appointment Validator', () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues[0].message).toBe(
-        'The appointmentDate must be in the future.',
+        'The appointmentDate must be in the future. Make sure you are using Unix timestamp in milliseconds.',
       )
     }
   })
