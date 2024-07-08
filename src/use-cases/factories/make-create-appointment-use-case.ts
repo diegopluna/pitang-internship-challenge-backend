@@ -1,8 +1,8 @@
-import { InMemoryAppointmentsRepository } from '@/repositories/in-memory/in-memory-appointments-repository'
 import { CreateAppointmentUseCase } from '../create-appointment'
+import { PrismaAppointmentsRepository } from '@/repositories/prisma/prisma-appointments-repository'
 
 export function makeCreateAppointmentUseCase() {
-  const appointmentsRepository = new InMemoryAppointmentsRepository()
+  const appointmentsRepository = new PrismaAppointmentsRepository()
 
   const useCase = new CreateAppointmentUseCase(appointmentsRepository)
 
