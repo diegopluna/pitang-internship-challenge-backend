@@ -47,4 +47,12 @@ export class PrismaAppointmentsRepository implements AppointmentsRepository {
 
     return appointments
   }
+
+  async findAll(): Promise<Appointment[]> {
+    return await prisma.appointment.findMany({
+      orderBy: {
+        appointmentDate: 'asc',
+      },
+    })
+  }
 }
