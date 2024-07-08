@@ -1,0 +1,19 @@
+{
+  "name": "pitang-internship-challenge-backend",
+  "version": "1.0.0",
+  "description": "\"COVID 19 Vaccination Scheduler API\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diegopluna/pitang-internship-challenge-backend.git"
+  },
+  "author": "Diego Luna",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/diegopluna/pitang-internship-challenge-backend/issues"
+  },
+  "homepage": "https://github.com/diegopluna/pitang-internship-challenge-backend#readme"
+}
