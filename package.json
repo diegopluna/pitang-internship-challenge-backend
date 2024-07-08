@@ -10,13 +10,15 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
+    "test:install-prisma-environment": "npm link vitest-environment-prisma",
+    "pretest": "run-s test:create-prisma-environment test:install-prisma-environment",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
-    "test:install-prisma-environment": "npm link vitest-environment-prisma",
-    "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment"
+    "test:unit": "vitest run --dir tests/repositories && vitest run --dir tests/validators && vitest run --dir tests/use-cases",
+    "test:e2e":  "vitest run --dir tests/http"    
   },
   "repository": {
     "type": "git",
@@ -52,6 +54,7 @@
   "dependencies": {
     "@fastify/helmet": "^11.1.1",
     "@prisma/client": "^5.16.1",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
     "pino-pretty": "^11.2.1",
