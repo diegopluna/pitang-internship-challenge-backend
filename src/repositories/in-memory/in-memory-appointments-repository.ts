@@ -1,6 +1,7 @@
 import { Prisma, Appointment } from '@prisma/client'
 import { AppointmentsRepository } from '../appointments-repository'
 import { randomUUID } from 'node:crypto'
+import { endOfDay, startOfDay } from 'date-fns'
 
 export class InMemoryAppointmentsRepository implements AppointmentsRepository {
   public static appointments: Appointment[] = []
@@ -17,5 +18,16 @@ export class InMemoryAppointmentsRepository implements AppointmentsRepository {
     InMemoryAppointmentsRepository.appointments.push(appointment)
 
     return appointment
+  }
+
+  async findByDay(date: Date): Promise<Appointment[]> {
+    const dayStart = startOfDay(date)
+    const dayEnd = endOfDay(date)
+
+    return InMemoryAppointmentsRepository.appointments.filter(
+      (appointment) =>
+        appointment.appointmentDate >= dayStart &&
+        appointment.appointmentDate <= dayEnd,
+    )
   }
 }
