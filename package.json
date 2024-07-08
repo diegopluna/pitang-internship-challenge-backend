@@ -4,9 +4,9 @@
   "description": "\"COVID 19 Vaccination Scheduler API\"",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/server.ts | pino-pretty",
     "build": "tsup src",
-    "start": "node dist/server.js",
+    "start": "node dist/server.js | pino-pretty",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@fastify/helmet": "^11.1.1",
-    "fastify": "^4.28.1"
+    "fastify": "^4.28.1",
+    "pino-pretty": "^11.2.1"
   }
 }
