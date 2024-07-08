@@ -13,7 +13,7 @@ export const mockCreateAppointmentInput = (): Prisma.AppointmentCreateInput => {
     ),
   )
 
-  const appointmentDateUnformatted = faker.date.soon()
+  const appointmentDateUnformatted = faker.date.future()
   const appointmentDate = new Date(
     Date.UTC(
       appointmentDateUnformatted.getFullYear(),
@@ -34,10 +34,23 @@ export const mockCreateAppointmentInput = (): Prisma.AppointmentCreateInput => {
 }
 
 export const mockCreateAppointmentControllerInput = () => {
+  const baseDate = faker.date.future()
+  const appointmentDate = new Date(
+    Date.UTC(
+      baseDate.getUTCFullYear(),
+      baseDate.getUTCMonth(),
+      baseDate.getUTCDate(),
+      faker.number.int({ min: 6, max: 20 }),
+      0,
+      0,
+      0,
+    ),
+  ).getTime()
+
   return {
     name: faker.person.fullName(),
     birthDay: format(faker.date.birthdate(), 'yyyy-MM-dd'),
-    appointmentDate: faker.date.future().getTime(),
+    appointmentDate,
   }
 }
 
