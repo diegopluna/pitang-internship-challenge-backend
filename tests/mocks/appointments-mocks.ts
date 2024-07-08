@@ -1,3 +1,4 @@
+import { createAppointmentValidator } from '@/validators/create-appointment-validator'
 import { faker } from '@faker-js/faker'
 import { Prisma } from '@prisma/client'
 import { format } from 'date-fns'
@@ -32,10 +33,19 @@ export const mockCreateAppointmentInput = (): Prisma.AppointmentCreateInput => {
   }
 }
 
-export const mockAppointmentControllerInput = () => {
+export const mockCreateAppointmentControllerInput = () => {
   return {
     name: faker.person.fullName(),
     birthDay: format(faker.date.birthdate(), 'yyyy-MM-dd'),
     appointmentDate: faker.date.future().getTime(),
   }
+}
+
+export const mockCreateAppointmentUseCaseInput = (
+  overrides?: Partial<ReturnType<typeof mockCreateAppointmentControllerInput>>,
+) => {
+  return createAppointmentValidator.parse({
+    ...mockCreateAppointmentControllerInput(),
+    ...overrides,
+  })
 }

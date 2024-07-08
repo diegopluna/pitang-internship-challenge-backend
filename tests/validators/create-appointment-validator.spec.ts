@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { faker } from '@faker-js/faker'
 import { createAppointmentValidator } from '@/validators/create-appointment-validator'
 import { format } from 'date-fns'
-import { mockAppointmentControllerInput } from '@tests/mocks/appointments-mocks'
+import { mockCreateAppointmentControllerInput } from '@tests/mocks/appointments-mocks'
 
 describe('Create Appointment Validator', () => {
   it('should validate a valid input', () => {
-    const validInput = mockAppointmentControllerInput()
+    const validInput = mockCreateAppointmentControllerInput()
     const result = createAppointmentValidator.safeParse(validInput)
 
     expect(result.success).toEqual(true)
@@ -14,7 +14,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject an empty name', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       name: '',
     }
 
@@ -28,7 +28,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject a missing name', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       name: undefined,
     }
 
@@ -42,7 +42,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject a non-string name', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       name: 123,
     }
 
@@ -56,7 +56,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject an invalid birthDay format', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       birthDay: '20-05-2000',
     }
 
@@ -72,7 +72,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject a future birthDay', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       birthDay: format(faker.date.future(), 'yyyy-MM-dd'),
     }
 
@@ -87,7 +87,7 @@ describe('Create Appointment Validator', () => {
   })
 
   it('should transform birthDay to UTC Date object', () => {
-    const validInput = mockAppointmentControllerInput()
+    const validInput = mockCreateAppointmentControllerInput()
 
     const result = createAppointmentValidator.safeParse(validInput)
 
@@ -103,7 +103,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject an invalid appointmentDate format', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       appointmentDate: 'invalid-date',
     }
 
@@ -119,7 +119,7 @@ describe('Create Appointment Validator', () => {
 
   it('should reject a past appointmentDate', () => {
     const invalidInput = {
-      ...mockAppointmentControllerInput(),
+      ...mockCreateAppointmentControllerInput(),
       appointmentDate: faker.date.past().getTime(),
     }
 
@@ -134,7 +134,7 @@ describe('Create Appointment Validator', () => {
   })
 
   it('should transform appointmentDate to UTC Date object', () => {
-    const validInput = mockAppointmentControllerInput()
+    const validInput = mockCreateAppointmentControllerInput()
 
     const result = createAppointmentValidator.safeParse(validInput)
 
