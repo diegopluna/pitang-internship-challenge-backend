@@ -18,7 +18,7 @@
     "test:install-prisma-environment": "npm link vitest-environment-prisma",
     "test:unit": "vitest run --dir tests/repositories && vitest run --dir tests/validators && vitest run --dir tests/use-cases",
     "test:unit:watch": "vitest --dir tests/validators",
-    "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment"
+    "pretest": "run-s test:create-prisma-environment test:install-prisma-environment"
   },
   "repository": {
     "type": "git",
