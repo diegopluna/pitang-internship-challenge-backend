@@ -1,4 +1,4 @@
-import { isBefore, parseISO } from 'date-fns'
+import { isBefore, isValid, parseISO } from 'date-fns'
 import { FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -21,6 +21,11 @@ export const createAppointmentValidator = z.object({
         message: 'Invalid date format. Expected format: YYYY-MM-DD',
       },
     )
+    .refine((dateStr) => {
+      const date = parseISO(dateStr)
+
+      return isValid(date)
+    })
     .refine(
       (dateStr) => {
         const date = parseISO(dateStr)
