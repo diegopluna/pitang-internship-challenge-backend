@@ -56,7 +56,11 @@ export const createAppointmentValidator = z.object({
       )
     }),
   appointmentDate: z
-    .number()
+    .number({
+      required_error: 'Appointment date is required',
+      invalid_type_error:
+        'Appointment date must be a number in Unix timestamp format',
+    })
     .refine(
       (timestamp) => {
         const date = fromUnixTime(timestamp / 1000)
