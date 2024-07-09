@@ -43,4 +43,100 @@ describe('Prisma Appointments Repository', () => {
       expect.arrayContaining([createdAppointment1, createdAppointment2]),
     )
   })
+
+  it('should find all appointments', async () => {
+    const appointment1 = mockCreateAppointmentUseCaseInput()
+    const appointment2 = mockCreateAppointmentUseCaseInput()
+    const appointment3 = mockCreateAppointmentUseCaseInput()
+
+    await sut.create(appointment1)
+    await sut.create(appointment2)
+    await sut.create(appointment3)
+
+    const result = await sut.findAll()
+
+    expect(result).toHaveLength(3)
+    expect(result).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: appointment1.name,
+          birthDay: appointment1.birthDay,
+          appointmentDate: appointment1.appointmentDate,
+        }),
+        expect.objectContaining({
+          name: appointment2.name,
+          birthDay: appointment2.birthDay,
+          appointmentDate: appointment2.appointmentDate,
+        }),
+        expect.objectContaining({
+          name: appointment3.name,
+          birthDay: appointment3.birthDay,
+          appointmentDate: appointment3.appointmentDate,
+        }),
+      ]),
+    )
+  })
+
+  it('should return appointments sorted by appointmentDate', async () => {
+    const date1 = new Date(
+      Date.UTC(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        15,
+        10,
+        0,
+        0,
+        0,
+      ),
+    )
+    const date2 = new Date(
+      Date.UTC(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        16,
+        10,
+        0,
+        0,
+        0,
+      ),
+    )
+    const date3 = new Date(
+      Date.UTC(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        17,
+        10,
+        0,
+        0,
+        0,
+      ),
+    )
+
+    const appointment1 = mockCreateAppointmentUseCaseInput({
+      appointmentDate: date2.getTime(),
+    })
+    const appointment2 = mockCreateAppointmentUseCaseInput({
+      appointmentDate: date3.getTime(),
+    })
+    const appointment3 = mockCreateAppointmentUseCaseInput({
+      appointmentDate: date1.getTime(),
+    })
+
+    await sut.create(appointment1)
+    await sut.create(appointment2)
+    await sut.create(appointment3)
+
+    const result = await sut.findAll()
+
+    expect(result).toHaveLength(3)
+    expect(result[0].appointmentDate).toEqual(date1)
+    expect(result[1].appointmentDate).toEqual(date2)
+    expect(result[2].appointmentDate).toEqual(date3)
+  })
+
+  it('should return an empty array when there are no appointments', async () => {
+    const result = await sut.findAll()
+
+    expect(result).toEqual([])
+  })
 })

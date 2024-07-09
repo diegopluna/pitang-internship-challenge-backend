@@ -51,4 +51,10 @@ export class InMemoryAppointmentsRepository implements AppointmentsRepository {
       )
     })
   }
+
+  async findAll(): Promise<Appointment[]> {
+    return InMemoryAppointmentsRepository.appointments.sort((a, b) => {
+      return a.appointmentDate.getTime() - b.appointmentDate.getTime()
+    })
+  }
 }
