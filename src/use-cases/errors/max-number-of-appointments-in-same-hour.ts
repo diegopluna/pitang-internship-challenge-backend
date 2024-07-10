@@ -1,5 +1,5 @@
 export class MaxNumberOfAppointmentsInSameHourError extends Error {
   constructor() {
-    super('Maximum number of appointments reached for the hour')
+    super('Limite máximo de agendamentos por hora atingido')
   }
 }

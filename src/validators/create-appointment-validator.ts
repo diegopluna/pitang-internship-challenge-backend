@@ -12,11 +12,11 @@ import { z } from 'zod'
 export const createAppointmentValidator = z.object({
   name: z
     .string({
-      required_error: 'Name is required',
-      invalid_type_error: 'Name must be a string',
+      required_error: 'Nome é obrigatório',
+      invalid_type_error: 'Nome deve ser uma string',
     })
     .trim()
-    .min(1, { message: 'Name must not be empty' }),
+    .min(1, { message: 'Nome não pode ser vazio' }),
   birthDay: z
     .string()
     .refine(
@@ -25,7 +25,8 @@ export const createAppointmentValidator = z.object({
         return regex.test(dateStr)
       },
       {
-        message: 'Invalid date format. Expected format: YYYY-MM-DD',
+        message:
+          'Formato de data de aniversário inválido. Formato esperado: YYYY-MM-DD',
       },
     )
     .refine(
@@ -35,7 +36,7 @@ export const createAppointmentValidator = z.object({
         return isValid(date)
       },
       {
-        message: 'Invalid date format. Expected format: YYYY-MM-DD',
+        message: 'Data de aniversário inválida. Formato esperado: YYYY-MM-DD',
       },
     )
     .refine(
@@ -45,7 +46,7 @@ export const createAppointmentValidator = z.object({
         return isBefore(date, new Date())
       },
       {
-        message: 'The date must be in the past.',
+        message: 'A data de aniversário deve ser anterior à data atual.',
       },
     )
     .transform((dateStr) => {
@@ -57,9 +58,9 @@ export const createAppointmentValidator = z.object({
     }),
   appointmentDate: z
     .number({
-      required_error: 'Appointment date is required',
+      required_error: 'Data de agendamento é obrigatória',
       invalid_type_error:
-        'Appointment date must be a number in Unix timestamp format',
+        'Data de agendamento deve ser um número no formato Unix timestamp',
     })
     .refine(
       (timestamp) => {
@@ -68,7 +69,7 @@ export const createAppointmentValidator = z.object({
       },
       {
         message:
-          'Invalid date format. Expected Unix timestamp in milliseconds.',
+          'Data de agendamento inválida. Formato esperado: Unix timestamp em milissegundos',
       },
     )
     .refine(
@@ -80,7 +81,7 @@ export const createAppointmentValidator = z.object({
       },
       {
         message:
-          'The appointmentDate must be in the future. Make sure you are using Unix timestamp in milliseconds.',
+          'A data de agendamento deve ser posterior à data e hora atual.',
       },
     )
     .transform((timestamp) => {

@@ -16,12 +16,12 @@ app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
     return reply
       .status(400)
-      .send({ message: 'Validation error', issues: error.format() })
+      .send({ message: 'Erro de validação', issues: error.format() })
   }
 
   if (env.NODE_ENV !== 'production') {
     console.error(error)
   }
 
-  reply.status(500).send({ message: 'Internal server error' })
+  reply.status(500).send({ message: 'Erro interno do servidor' })
 })

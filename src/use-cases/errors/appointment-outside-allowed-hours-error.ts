@@ -1,5 +1,5 @@
 export class AppointmentOutsideAllowedHoursError extends Error {
   constructor() {
-    super('Appointments can only be scheduled between 6am and 8pm')
+    super('Agendamentos só podem ser feitos entre 06:00 e 20:00')
   }
 }
