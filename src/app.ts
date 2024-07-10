@@ -1,4 +1,5 @@
 import fastifyHelmet from '@fastify/helmet'
+import fastifyCors from '@fastify/cors'
 import fastify from 'fastify'
 import { env } from './env'
 import { appointmentsRoutes } from './http/controllers/appointments/routes'
@@ -7,6 +8,7 @@ import { ZodError } from 'zod'
 export const app = fastify({ logger: true })
 
 app.register(fastifyHelmet)
+app.register(fastifyCors)
 
 app.register(appointmentsRoutes, { prefix: '/api/appointments' })
 
