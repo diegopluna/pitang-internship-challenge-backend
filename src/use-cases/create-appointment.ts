@@ -24,7 +24,8 @@ export class CreateAppointmentUseCase {
   }: CreateAppointmenteUseCaseRequest): Promise<CreateAppointmentUseCaseResponse> {
     const appointmentHour = appointmentDate.getUTCHours()
 
-    if (appointmentHour < 6 || appointmentHour > 20) {
+    // Comparando com horário em UTC, que seria 06:00 e 19:00 no Brasil
+    if (appointmentHour < 9 || appointmentHour > 22) {
       throw new AppointmentOutsideAllowedHoursError()
     }
 

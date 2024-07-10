@@ -40,7 +40,7 @@ export const mockCreateAppointmentControllerInput = () => {
       baseDate.getUTCFullYear(),
       baseDate.getUTCMonth(),
       baseDate.getUTCDate(),
-      faker.number.int({ min: 6, max: 20 }),
+      faker.number.int({ min: 9, max: 22 }),
       0,
       0,
       0,
