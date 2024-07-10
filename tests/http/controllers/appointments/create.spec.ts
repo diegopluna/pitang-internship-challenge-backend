@@ -39,7 +39,7 @@ describe('Create Appointment (e2e)', () => {
       .send(invalidData)
 
     expect(response.statusCode).toBe(400)
-    expect(response.body.message).toBe('Validation error')
+    expect(response.body.message).toBe('Erro de validação')
   })
 
   it('should return 400 for appointment outside allowed hours', async () => {
@@ -54,7 +54,7 @@ describe('Create Appointment (e2e)', () => {
 
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe(
-      'Appointments can only be scheduled between 6am and 8pm',
+      'Agendamentos só podem ser feitos entre 06:00 e 20:00',
     )
   })
 
@@ -79,7 +79,7 @@ describe('Create Appointment (e2e)', () => {
 
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe(
-      'Maximum number of appointments reached for the day',
+      'Limite máximo de agendamentos diários atingido',
     )
   })
 
@@ -103,7 +103,7 @@ describe('Create Appointment (e2e)', () => {
 
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe(
-      'Maximum number of appointments reached for the hour',
+      'Limite máximo de agendamentos por hora atingido',
     )
   })
 })

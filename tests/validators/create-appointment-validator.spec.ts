@@ -22,7 +22,7 @@ describe('Create Appointment Validator', () => {
 
     expect(result.success).toEqual(false)
     if (!result.success) {
-      expect(result.error.issues[0].message).toEqual('Name must not be empty')
+      expect(result.error.issues[0].message).toEqual('Nome não pode ser vazio')
     }
   })
 
@@ -36,7 +36,7 @@ describe('Create Appointment Validator', () => {
 
     expect(result.success).toEqual(false)
     if (!result.success) {
-      expect(result.error.issues[0].message).toEqual('Name is required')
+      expect(result.error.issues[0].message).toEqual('Nome é obrigatório')
     }
   })
 
@@ -50,7 +50,7 @@ describe('Create Appointment Validator', () => {
 
     expect(result.success).toEqual(false)
     if (!result.success) {
-      expect(result.error.issues[0].message).toEqual('Name must be a string')
+      expect(result.error.issues[0].message).toEqual('Nome deve ser uma string')
     }
   })
 
@@ -65,7 +65,7 @@ describe('Create Appointment Validator', () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues[0].message).toBe(
-        'Invalid date format. Expected format: YYYY-MM-DD',
+        'Formato de data de aniversário inválido. Formato esperado: YYYY-MM-DD',
       )
     }
   })
@@ -81,7 +81,7 @@ describe('Create Appointment Validator', () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues[0].message).toBe(
-        'The date must be in the past.',
+        'A data de aniversário deve ser anterior à data atual.',
       )
     }
   })
@@ -112,7 +112,7 @@ describe('Create Appointment Validator', () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues[0].message).toBe(
-        'Appointment date must be a number in Unix timestamp format',
+        'Data de agendamento deve ser um número no formato Unix timestamp',
       )
     }
   })
@@ -128,7 +128,7 @@ describe('Create Appointment Validator', () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues[0].message).toBe(
-        'The appointmentDate must be in the future. Make sure you are using Unix timestamp in milliseconds.',
+        'A data de agendamento deve ser posterior à data e hora atual.',
       )
     }
   })
