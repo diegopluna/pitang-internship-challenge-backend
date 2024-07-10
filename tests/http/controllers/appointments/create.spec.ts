@@ -45,7 +45,7 @@ describe('Create Appointment (e2e)', () => {
   it('should return 400 for appointment outside allowed hours', async () => {
     const appointmentData = mockCreateAppointmentControllerInput()
     const date = new Date(appointmentData.appointmentDate)
-    date.setUTCHours(22)
+    date.setUTCHours(23)
     appointmentData.appointmentDate = date.getTime()
 
     const response = await request(app.server)
@@ -54,7 +54,7 @@ describe('Create Appointment (e2e)', () => {
 
     expect(response.statusCode).toBe(400)
     expect(response.body.message).toBe(
-      'Agendamentos só podem ser feitos entre 06:00 e 20:00',
+      'Agendamentos só podem ser feitos entre 06:00 e 19:00',
     )
   })
 
