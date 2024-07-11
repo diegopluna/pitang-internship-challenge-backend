@@ -11,7 +11,7 @@ describe('List Appointments Use Case', () => {
     InMemoryAppointmentsRepository.appointments = []
   })
 
-  it('should list appointments grouped by date and hour', async () => {
+  it('should list all appointments', async () => {
     const date1 = new Date(
       Date.UTC(
         new Date().getFullYear(),
@@ -34,7 +34,6 @@ describe('List Appointments Use Case', () => {
         0,
       ),
     )
-
     const date3 = new Date(
       Date.UTC(
         new Date().getFullYear(),
@@ -67,27 +66,20 @@ describe('List Appointments Use Case', () => {
 
     const { appointments } = await sut.execute()
 
-    const formatDate = (date: Date) => date.toISOString().split('T')[0]
-    const formatHour = (date: Date) =>
-      `${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')}`
-
-    expect(appointments).toEqual({
-      [formatDate(date1)]: {
-        [formatHour(date1)]: [
-          expect.objectContaining(appointment1),
-          expect.objectContaining(appointment2),
-        ],
-        [formatHour(date2)]: [expect.objectContaining(appointment3)],
-      },
-      [formatDate(date3)]: {
-        [formatHour(date3)]: [expect.objectContaining(appointment4)],
-      },
-    })
+    expect(appointments).toHaveLength(4)
+    expect(appointments).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining(appointment1),
+        expect.objectContaining(appointment2),
+        expect.objectContaining(appointment3),
+        expect.objectContaining(appointment4),
+      ]),
+    )
   })
 
-  it('should return an empty object when there are no appointments', async () => {
+  it('should return an empty array when there are no appointments', async () => {
     const { appointments } = await sut.execute()
 
-    expect(appointments).toEqual({})
+    expect(appointments).toEqual([])
   })
 })
