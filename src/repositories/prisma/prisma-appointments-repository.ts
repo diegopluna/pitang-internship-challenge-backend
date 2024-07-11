@@ -55,4 +55,14 @@ export class PrismaAppointmentsRepository implements AppointmentsRepository {
       },
     })
   }
+
+  async findById(id: string): Promise<Appointment | null> {
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    return appointment
+  }
 }
