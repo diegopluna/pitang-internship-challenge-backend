@@ -57,4 +57,16 @@ export class InMemoryAppointmentsRepository implements AppointmentsRepository {
       return a.appointmentDate.getTime() - b.appointmentDate.getTime()
     })
   }
+
+  async findById(id: string): Promise<Appointment | null> {
+    const appointment = InMemoryAppointmentsRepository.appointments.find(
+      (appointment) => appointment.id === id,
+    )
+
+    if (!appointment) {
+      return null
+    }
+
+    return appointment
+  }
 }

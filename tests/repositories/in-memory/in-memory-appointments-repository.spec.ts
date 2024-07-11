@@ -126,4 +126,19 @@ describe('In-Memory Appointments Repository', () => {
 
     expect(result).toEqual([])
   })
+
+  it('should find an appointment by id', async () => {
+    const appointment = mockCreateAppointmentUseCaseInput()
+    const createdAppointment = await sut.create(appointment)
+
+    const result = await sut.findById(createdAppointment.id)
+
+    expect(result).toEqual(createdAppointment)
+  })
+
+  it('should return null when appointment is not found', async () => {
+    const result = await sut.findById('non-existent-id')
+
+    expect(result).toBeNull()
+  })
 })
