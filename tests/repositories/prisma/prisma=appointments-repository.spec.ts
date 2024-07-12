@@ -154,4 +154,32 @@ describe('Prisma Appointments Repository', () => {
 
     expect(result).toBeNull()
   })
+
+  it('should update an appointment', async () => {
+    const appointmentData = mockCreateAppointmentUseCaseInput()
+    const createdAppointment = await sut.create(appointmentData)
+
+    const updatedData = {
+      ...createdAppointment,
+      name: 'Updated Name',
+      vaccinationComplete: true,
+    }
+
+    const updatedAppointment = await sut.update(updatedData)
+
+    expect(updatedAppointment).toEqual(updatedData)
+    expect(updatedAppointment?.id).toBe(createdAppointment.id)
+  })
+
+  it('should throw an error when trying to update a non-existent appointment', async () => {
+    const nonExistentAppointment = {
+      id: 'non-existent-id',
+      name: 'Non-existent',
+      birthDay: new Date(),
+      appointmentDate: new Date(),
+      vaccinationComplete: false,
+    }
+
+    await expect(sut.update(nonExistentAppointment)).rejects.toThrow()
+  })
 })

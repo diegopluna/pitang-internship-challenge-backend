@@ -2,7 +2,7 @@ import { InMemoryAppointmentsRepository } from '@/repositories/in-memory/in-memo
 import { beforeEach, describe, expect, it } from 'vitest'
 import { GetAppointmentByIdUseCase } from '@/use-cases/get-appointment-by-id'
 import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-mocks'
-import { AppointmentNotFoundError } from '@/use-cases/errors/appointment-not-found-error'
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
 
 describe('Get Appointment By Id Use Case', () => {
   const appointmentsRepository = new InMemoryAppointmentsRepository()
@@ -25,6 +25,6 @@ describe('Get Appointment By Id Use Case', () => {
   it('should throw AppointmentNotFoundError if appointment does not exist', async () => {
     await expect(() =>
       sut.execute({ id: 'non-existent-id' }),
-    ).rejects.toBeInstanceOf(AppointmentNotFoundError)
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 })

@@ -5,7 +5,7 @@ import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-moc
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { randomUUID } from 'crypto'
 
-describe('Get Appointment By ID (e2e)', () => {
+describe('Vaccinate Appointment (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
@@ -18,31 +18,28 @@ describe('Get Appointment By ID (e2e)', () => {
     await prisma.appointment.deleteMany()
   })
 
-  it('should be able to get an appointment by id', async () => {
+  it('should mark an appointment as vaccinated', async () => {
     const appointmentData = mockCreateAppointmentUseCaseInput()
     const createdAppointment = await prisma.appointment.create({
       data: appointmentData,
     })
 
-    const response = await request(app.server).get(
-      `/api/appointments/${createdAppointment.id}`,
+    const response = await request(app.server).patch(
+      `/api/appointments/${createdAppointment.id}/vaccinate`,
     )
 
-    expect(response.status).toBe(200)
-    expect(response.body.appointment).toEqual(
-      expect.objectContaining({
-        id: createdAppointment.id,
-        name: appointmentData.name,
-        birthDay: appointmentData.birthDay.toISOString(),
-        appointmentDate: appointmentData.appointmentDate.toISOString(),
-        vaccinationComplete: false,
-      }),
-    )
+    expect(response.status).toBe(204)
+
+    const updatedAppointment = await prisma.appointment.findUnique({
+      where: { id: createdAppointment.id },
+    })
+
+    expect(updatedAppointment?.vaccinationComplete).toBe(true)
   })
 
   it('should return 404 when appointment is not found', async () => {
-    const response = await request(app.server).get(
-      `/api/appointments/${randomUUID()}`,
+    const response = await request(app.server).patch(
+      `/api/appointments/${randomUUID()}/vaccinate`,
     )
 
     expect(response.status).toBe(404)
@@ -50,8 +47,8 @@ describe('Get Appointment By ID (e2e)', () => {
   })
 
   it('should return 400 when id is invalid', async () => {
-    const response = await request(app.server).get(
-      '/api/appointments/invalid-id',
+    const response = await request(app.server).patch(
+      '/api/appointments/invalid-id/vaccinate',
     )
 
     expect(response.status).toBe(400)

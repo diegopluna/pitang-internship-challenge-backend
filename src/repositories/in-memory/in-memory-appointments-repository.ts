@@ -69,4 +69,25 @@ export class InMemoryAppointmentsRepository implements AppointmentsRepository {
 
     return appointment
   }
+
+  async update(data: Appointment): Promise<Appointment> {
+    const appointmentIndex =
+      InMemoryAppointmentsRepository.appointments.findIndex(
+        (appointment) => appointment.id === data.id,
+      )
+
+    if (appointmentIndex === -1) {
+      throw new Error()
+    }
+
+    const updatedAppointment = {
+      ...InMemoryAppointmentsRepository.appointments[appointmentIndex],
+      ...(data as Appointment),
+    }
+
+    InMemoryAppointmentsRepository.appointments[appointmentIndex] =
+      updatedAppointment
+
+    return updatedAppointment
+  }
 }

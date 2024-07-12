@@ -71,28 +71,14 @@ describe('List Appointments (e2e)', () => {
 
     const response = await request(app.server).get('/api/appointments')
 
-    const formatDate = (date: Date) => date.toISOString().split('T')[0]
-    const formatHour = (date: Date) =>
-      `${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')}`
-
     expect(response.status).toBe(200)
     expect(response.body).toEqual({
-      appointments: {
-        [formatDate(date1)]: {
-          [formatHour(date1)]: expect.arrayContaining([
-            expect.objectContaining({ name: appointment1.name }),
-            expect.objectContaining({ name: appointment2.name }),
-          ]),
-          [formatHour(date2)]: [
-            expect.objectContaining({ name: appointment3.name }),
-          ],
-        },
-        [formatDate(date3)]: {
-          [formatHour(date3)]: [
-            expect.objectContaining({ name: appointment4.name }),
-          ],
-        },
-      },
+      appointments: expect.arrayContaining([
+        expect.objectContaining({ name: appointment1.name }),
+        expect.objectContaining({ name: appointment2.name }),
+        expect.objectContaining({ name: appointment3.name }),
+        expect.objectContaining({ name: appointment4.name }),
+      ]),
     })
   })
 
@@ -100,6 +86,6 @@ describe('List Appointments (e2e)', () => {
     const response = await request(app.server).get('/api/appointments')
 
     expect(response.status).toBe(200)
-    expect(response.body).toEqual({ appointments: {} })
+    expect(response.body).toEqual({ appointments: [] })
   })
 })

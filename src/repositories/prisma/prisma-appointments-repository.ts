@@ -65,4 +65,15 @@ export class PrismaAppointmentsRepository implements AppointmentsRepository {
 
     return appointment
   }
+
+  async update(data: Appointment): Promise<Appointment> {
+    const appointment = await prisma.appointment.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    })
+
+    return appointment
+  }
 }

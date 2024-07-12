@@ -5,4 +5,5 @@ export interface AppointmentsRepository {
   findByDay: (date: Date) => Promise<Appointment[]>
   findAll: () => Promise<Appointment[]>
   findById: (id: string) => Promise<Appointment | null>
+  update: (data: Appointment) => Promise<Appointment>
 }

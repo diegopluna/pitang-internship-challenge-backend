@@ -1,17 +1,17 @@
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
-import { makeGetAppointmentByIdUseCase } from '@/use-cases/factories/make-get-appointment-by-id-use-case'
+import { makeVaccinateUseCase } from '@/use-cases/factories/make-vaccinate-use-case'
 import { validateGetAppointmentByIdInput } from '@/validators/get-appointment-by-id-validator'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function getById(request: FastifyRequest, reply: FastifyReply) {
+export async function vaccinate(request: FastifyRequest, reply: FastifyReply) {
   const { id } = validateGetAppointmentByIdInput(request)
 
   try {
-    const getAppointmentByIdUseCase = makeGetAppointmentByIdUseCase()
+    const vaccinateUseCase = await makeVaccinateUseCase()
 
-    const appointment = await getAppointmentByIdUseCase.execute({ id })
+    await vaccinateUseCase.execute({ id })
 
-    return reply.status(200).send(appointment)
+    return reply.status(204).send()
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: error.message })

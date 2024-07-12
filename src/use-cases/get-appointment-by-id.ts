@@ -1,6 +1,6 @@
 import { AppointmentsRepository } from '@/repositories/appointments-repository'
 import { Appointment } from '@prisma/client'
-import { AppointmentNotFoundError } from './errors/appointment-not-found-error'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 interface GetAppointmentByIdUseCaseRequest {
   id: string
@@ -19,7 +19,7 @@ export class GetAppointmentByIdUseCase {
     const appointment = await this.appointmentsRepository.findById(request.id)
 
     if (!appointment) {
-      throw new AppointmentNotFoundError()
+      throw new ResourceNotFoundError()
     }
 
     return { appointment }
