@@ -23,7 +23,17 @@ describe('Create Appointment Use Case', () => {
 
   it('should not create an appointment before 6amBRT(9am UTC)', async () => {
     const data = mockCreateAppointmentUseCaseInput()
-    data.appointmentDate = new Date(data.appointmentDate.setUTCHours(8))
+    data.appointmentDate = new Date(
+      Date.UTC(
+        data.appointmentDate.getUTCFullYear(),
+        data.appointmentDate.getUTCMonth(),
+        data.appointmentDate.getUTCDate(),
+        8,
+        0,
+        0,
+        0,
+      ),
+    )
 
     await expect(() => sut.execute(data)).rejects.toBeInstanceOf(
       AppointmentOutsideAllowedHoursError,
@@ -32,7 +42,17 @@ describe('Create Appointment Use Case', () => {
 
   it('should not create an appointment after 7pmBRT(10pm UTC)', async () => {
     const data = mockCreateAppointmentUseCaseInput()
-    data.appointmentDate = new Date(data.appointmentDate.setUTCHours(23))
+    data.appointmentDate = new Date(
+      Date.UTC(
+        data.appointmentDate.getUTCFullYear(),
+        data.appointmentDate.getUTCMonth(),
+        data.appointmentDate.getUTCDate(),
+        23, // 11pm UTC
+        0,
+        0,
+        0,
+      ),
+    )
 
     await expect(() => sut.execute(data)).rejects.toBeInstanceOf(
       AppointmentOutsideAllowedHoursError,
