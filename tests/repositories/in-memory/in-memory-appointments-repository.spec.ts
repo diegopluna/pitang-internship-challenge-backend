@@ -157,7 +157,7 @@ describe('In-Memory Appointments Repository', () => {
     expect(updatedAppointment?.id).toBe(createdAppointment.id)
   })
 
-  it('should return null when trying to update a non-existent appointment', async () => {
+  it('should throw an error when trying to update a non-existent appointment', async () => {
     const nonExistentAppointment = {
       id: 'non-existent-id',
       name: 'Non-existent',
@@ -166,7 +166,6 @@ describe('In-Memory Appointments Repository', () => {
       vaccinationComplete: false,
     }
 
-    const result = await sut.update(nonExistentAppointment)
-    expect(result).toBeNull()
+    await expect(sut.update(nonExistentAppointment)).rejects.toThrow()
   })
 })
