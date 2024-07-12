@@ -1,4 +1,4 @@
-import { AppointmentNotFoundError } from '@/use-cases/errors/appointment-not-found-error'
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
 import { makeGetAppointmentByIdUseCase } from '@/use-cases/factories/make-get-appointment-by-id-use-case'
 import { validateGetAppointmentByIdInput } from '@/validators/get-appointment-by-id-validator'
 import { FastifyReply, FastifyRequest } from 'fastify'
@@ -13,7 +13,7 @@ export async function getById(request: FastifyRequest, reply: FastifyReply) {
 
     return reply.status(200).send(appointment)
   } catch (error) {
-    if (error instanceof AppointmentNotFoundError) {
+    if (error instanceof ResourceNotFoundError) {
       return reply.status(404).send({ message: error.message })
     }
 
