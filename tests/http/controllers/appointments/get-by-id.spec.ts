@@ -46,7 +46,7 @@ describe('Get Appointment By ID (e2e)', () => {
     )
 
     expect(response.status).toBe(404)
-    expect(response.body.message).toBe('Agendamento não encontrado')
+    expect(response.body.message).toBe('Recurso não encontrado')
   })
 
   it('should return 400 when id is invalid', async () => {
