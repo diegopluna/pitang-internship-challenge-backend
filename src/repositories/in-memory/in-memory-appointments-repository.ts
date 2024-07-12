@@ -70,14 +70,14 @@ export class InMemoryAppointmentsRepository implements AppointmentsRepository {
     return appointment
   }
 
-  async update(data: Appointment): Promise<Appointment | null> {
+  async update(data: Appointment): Promise<Appointment> {
     const appointmentIndex =
       InMemoryAppointmentsRepository.appointments.findIndex(
         (appointment) => appointment.id === data.id,
       )
 
     if (appointmentIndex === -1) {
-      return null
+      throw new Error()
     }
 
     const updatedAppointment = {
