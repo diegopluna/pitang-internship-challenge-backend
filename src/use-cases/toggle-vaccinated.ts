@@ -10,10 +10,9 @@ interface VaccinateUseCaseResponse {
   appointment: Appointment
 }
 
-export class VaccinateUseCase {
+export class ToogleVaccinatedUseCase {
   constructor(private appointmentsRepository: AppointmentsRepository) {}
 
-  // TODO: Posso tornar esse método mais performátioco chamando direto o update e se não encontrar o appointment, ele retorna um erro
   async execute(
     request: VaccinateUseCaseRequest,
   ): Promise<VaccinateUseCaseResponse> {
@@ -25,7 +24,7 @@ export class VaccinateUseCase {
 
     const updatedAppointment = await this.appointmentsRepository.update({
       ...appointment,
-      vaccinationComplete: true,
+      vaccinationComplete: !appointment.vaccinationComplete,
     })
 
     return { appointment: updatedAppointment }

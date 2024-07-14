@@ -1,15 +1,15 @@
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
-import { makeVaccinateUseCase } from '@/use-cases/factories/make-vaccinate-use-case'
+import { makeToggleVaccinatedUseCase } from '@/use-cases/factories/make-toggle-vaccinated-use-case'
 import { validateGetAppointmentByIdInput } from '@/validators/get-appointment-by-id-validator'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function vaccinate(request: FastifyRequest, reply: FastifyReply) {
+export async function toggle(request: FastifyRequest, reply: FastifyReply) {
   const { id } = validateGetAppointmentByIdInput(request)
 
   try {
-    const vaccinateUseCase = await makeVaccinateUseCase()
+    const toggleVaccinatedUseCase = await makeToggleVaccinatedUseCase()
 
-    await vaccinateUseCase.execute({ id })
+    await toggleVaccinatedUseCase.execute({ id })
 
     return reply.status(204).send()
   } catch (error) {
