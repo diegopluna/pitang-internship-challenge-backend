@@ -5,7 +5,7 @@ import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-moc
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { randomUUID } from 'crypto'
 
-describe('Vaccinate Appointment (e2e)', () => {
+describe('Toggle Vaccinated (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
@@ -18,14 +18,14 @@ describe('Vaccinate Appointment (e2e)', () => {
     await prisma.appointment.deleteMany()
   })
 
-  it('should mark an appointment as vaccinated', async () => {
+  it('should toggle vaccinated', async () => {
     const appointmentData = mockCreateAppointmentUseCaseInput()
     const createdAppointment = await prisma.appointment.create({
       data: appointmentData,
     })
 
     const response = await request(app.server).patch(
-      `/api/appointments/${createdAppointment.id}/vaccinate`,
+      `/api/appointments/${createdAppointment.id}/toggle-vaccinated`,
     )
 
     expect(response.status).toBe(204)
@@ -34,12 +34,14 @@ describe('Vaccinate Appointment (e2e)', () => {
       where: { id: createdAppointment.id },
     })
 
-    expect(updatedAppointment?.vaccinationComplete).toBe(true)
+    expect(updatedAppointment?.vaccinationComplete).toBe(
+      !createdAppointment.vaccinationComplete,
+    )
   })
 
   it('should return 404 when appointment is not found', async () => {
     const response = await request(app.server).patch(
-      `/api/appointments/${randomUUID()}/vaccinate`,
+      `/api/appointments/${randomUUID()}/toggle-vaccinated`,
     )
 
     expect(response.status).toBe(404)
@@ -48,7 +50,7 @@ describe('Vaccinate Appointment (e2e)', () => {
 
   it('should return 400 when id is invalid', async () => {
     const response = await request(app.server).patch(
-      '/api/appointments/invalid-id/vaccinate',
+      '/api/appointments/invalid-id/toggle-vaccinated',
     )
 
     expect(response.status).toBe(400)
