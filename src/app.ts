@@ -5,7 +5,7 @@ import ScalarApiReference from '@scalar/fastify-api-reference'
 import { env } from './env'
 import { appointmentsRoutes } from './http/controllers/appointments/routes'
 import { ZodError } from 'zod'
-import path from 'node:path'
+import openApiJSON from '@/config/openapi/openapi.json'
 
 export const app = fastify({ logger: true })
 
@@ -16,7 +16,7 @@ app.register(ScalarApiReference, {
   routePrefix: '/docs',
   configuration: {
     spec: {
-      url: '/openapi.json',
+      content: openApiJSON,
     },
   },
 })
