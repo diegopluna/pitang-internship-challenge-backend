@@ -1,7 +1,6 @@
 import fastifyHelmet from '@fastify/helmet'
 import fastifyCors from '@fastify/cors'
 import fastify from 'fastify'
-import fastifyStatic from '@fastify/static'
 import ScalarApiReference from '@scalar/fastify-api-reference'
 import { env } from './env'
 import { appointmentsRoutes } from './http/controllers/appointments/routes'
@@ -12,10 +11,6 @@ export const app = fastify({ logger: true })
 
 app.register(fastifyHelmet)
 app.register(fastifyCors)
-
-app.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
-})
 
 app.register(ScalarApiReference, {
   routePrefix: '/docs',
