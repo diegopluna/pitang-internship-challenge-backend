@@ -28,26 +28,28 @@ export class UpdateAppointmentUseCase {
       throw new ResourceNotFoundError()
     }
 
-    const appointmentHour = appointmentDate.getUTCHours()
+    if (appointment.appointmentDate.getTime() !== appointmentDate.getTime()) {
+      const appointmentHour = appointmentDate.getUTCHours()
 
-    if (appointmentHour < 9 || appointmentHour > 22) {
-      throw new AppointmentOutsideAllowedHoursError()
-    }
+      if (appointmentHour < 9 || appointmentHour > 22) {
+        throw new AppointmentOutsideAllowedHoursError()
+      }
 
-    const appointmentsWithinSameDay =
-      await this.appointmentsRepository.findByDay(appointmentDate)
+      const appointmentsWithinSameDay =
+        await this.appointmentsRepository.findByDay(appointmentDate)
 
-    if (appointmentsWithinSameDay.length >= 20) {
-      throw new MaxNumberOfAppointmentsInSameDayError()
-    }
+      if (appointmentsWithinSameDay.length >= 20) {
+        throw new MaxNumberOfAppointmentsInSameDayError()
+      }
 
-    const appointmentsInSameHour = appointmentsWithinSameDay.filter(
-      (appointment) =>
-        appointment.appointmentDate.getUTCHours() === appointmentHour,
-    )
+      const appointmentsInSameHour = appointmentsWithinSameDay.filter(
+        (appointment) =>
+          appointment.appointmentDate.getUTCHours() === appointmentHour,
+      )
 
-    if (appointmentsInSameHour.length >= 2) {
-      throw new MaxNumberOfAppointmentsInSameHourError()
+      if (appointmentsInSameHour.length >= 2) {
+        throw new MaxNumberOfAppointmentsInSameHourError()
+      }
     }
 
     const updatedAppointment = await this.appointmentsRepository.update({
