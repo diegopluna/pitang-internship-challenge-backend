@@ -1,0 +1,293 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Vacina Fácil API",
+    "description": "API para agendamento de vacinas da COVID-19",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "url": "https://github.com/diegopluna/pitang-internship-challenge-backend",
+    "description": "GitHub"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Agendamentos"
+    }
+  ],
+  "paths": {
+    "/appointments": {
+      "post": {
+        "tags": ["Agendamentos"],
+        "summary": "Criar um novo agendamento de vacina",
+        "description": "Criar um novo agendamento de vacina a partir do nome do paciente, data de aniversário e data e hora do agendamento.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Criado - Agendamento criado com sucesso"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest-CreationValidation"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Agendamentos"],
+        "summary": "Lista todos os agendamentos",
+        "description": "Lista todos os agendamentos, ordenados por data e hora de forma crescente.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ListResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/appointments/{id}": {
+      "get": {
+        "tags": ["Agendamentos"],
+        "summary": "Buscar um agendamento por ID",
+        "description": "Busca um agendamento informando o parâmetro ID na URL",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do agendamento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/AppointmentResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest-IDValidation"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/appointments/{id}/toggle-vaccinated": {
+      "patch": {
+        "tags": ["Agendamentos"],
+        "summary": "Alternar o status de vacinação do agendamento",
+        "description": "Alterna o status de vacinação do agendamento informando o parâmetro ID na URL",
+        "responses": {
+          "204": {
+            "description": "No Content - Agendamento atualizado com sucesso"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest-IDValidation"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppointmentInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do paciente",
+            "example": "John Doe"
+          },
+          "birthDay": {
+            "type": "string",
+            "description": "Data de nascimento do paciente no formato YYYY-MM-DD (Necessário ser uma data no passado)",
+            "format": "date",
+            "example": "1993-04-12"
+          },
+          "appointmentDate": {
+            "type": "number",
+            "description": "Data e Hora do agendamento no formato de Unix Timestamp em ms. (Necessário estar no futuro)",
+            "example": 1724184000000
+          }
+        },
+        "required": ["name", "birthDay", "appointmentDate"]
+      },
+      "Appointment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "birthDay": { "type": "string", "format": "date-time" },
+          "appointmentDate": { "type": "string", "format": "date-time" },
+          "vaccinationCompleted": { "type": "boolean" }
+        }
+      },
+      "ListAppointments": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/Appointment" }
+      },
+      "CreationValidationError": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "issues": {
+            "type": "object",
+            "properties": {
+              "_errors": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "birthDay": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "appointmentDate": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["message"]
+      },
+      "IDValidationError": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "issues": {
+            "type": "object",
+            "properties": {
+              "_errors": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "id": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["message"]
+      },
+      "InternalServerErrorSchema": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        },
+        "required": ["message"]
+      },
+      "NotFoundErrorSchema": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        },
+        "required": ["message"]
+      }
+    },
+    "responses": {
+      "ListResponse": {
+        "description": "OK",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ListAppointments"
+            }
+          }
+        }
+      },
+      "BadRequest-CreationValidation": {
+        "description": "Bad Request - Erro de validação de dados ou horário de agendamento inválido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreationValidationError"
+            }
+          }
+        }
+      },
+      "BadRequest-IDValidation": {
+        "description": "Bad Request - Erro de validação do ID",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IDValidationError"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Erro Interno do Servidor",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/InternalServerErrorSchema"
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Not Found - Agendamento não encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NotFoundErrorSchema"
+            }
+          }
+        }
+      }
+    }
+  }
+}
