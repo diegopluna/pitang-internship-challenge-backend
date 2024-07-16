@@ -92,6 +92,46 @@
             "$ref": "#/components/responses/InternalServerError"
           }
         }
+      },
+      "put": {
+        "tags": ["Agendamentos"],
+        "summary": "Atualizar um agendamento por ID",
+        "description": "Atualiza um agendamento informando o parâmetro ID na URL e os campos name, birthDay, appointmentDate e vaccinationComplete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID do agendamento"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppointmentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content - Agendamento atualizado com sucesso"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest-UpdateValidation"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
       }
     },
     "/appointments/{id}/toggle-vaccinated": {
@@ -140,6 +180,38 @@
         },
         "required": ["name", "birthDay", "appointmentDate"]
       },
+      "UpdateAppointmentInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do paciente",
+            "example": "John Doe"
+          },
+          "birthDay": {
+            "type": "string",
+            "description": "Data de nascimento do paciente no formato YYYY-MM-DD (Necessário ser uma data no passado)",
+            "format": "date",
+            "example": "1993-04-12"
+          },
+          "appointmentDate": {
+            "type": "number",
+            "description": "Data e Hora do agendamento no formato de Unix Timestamp em ms. (Necessário estar no futuro)",
+            "example": 1724184000000
+          },
+          "vaccinationComplete": {
+            "type": "boolean",
+            "description": "Status de vacinação do paciente",
+            "example": false
+          }
+        },
+        "required": [
+          "name",
+          "birthDay",
+          "appointmentDate",
+          "vaccinationComplete"
+        ]
+      },
       "Appointment": {
         "type": "object",
         "properties": {
@@ -147,7 +219,7 @@
           "name": { "type": "string" },
           "birthDay": { "type": "string", "format": "date-time" },
           "appointmentDate": { "type": "string", "format": "date-time" },
-          "vaccinationCompleted": { "type": "boolean" }
+          "vaccinationComplete": { "type": "boolean" }
         }
       },
       "ListAppointments": {
@@ -184,6 +256,67 @@
                 }
               },
               "appointmentDate": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["message"]
+      },
+      "UpdateValidationError": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "issues": {
+            "type": "object",
+            "properties": {
+              "_errors": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "id": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "birthDay": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "appointmentDate": {
+                "type": "object",
+                "properties": {
+                  "_errors": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  }
+                }
+              },
+              "vaccinationComplete": {
                 "type": "object",
                 "properties": {
                   "_errors": {
@@ -254,6 +387,16 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/CreationValidationError"
+            }
+          }
+        }
+      },
+      "BadRequest-UpdateValidation": {
+        "description": "Bad Request - Erro de validação de dados ou horário de agendamento inválido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UpdateValidationError"
             }
           }
         }
