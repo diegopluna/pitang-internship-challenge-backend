@@ -88,6 +88,7 @@ O servidor estará disponível em `http://localhost:3000`.
 - Criar agendamento de vacina - `POST /appointments`
 - Listar agendamentos - `GET /appointments`
 - Buscar agendamento por ID - `GET /appointments/:id`
+- Atualizar dados do agendamento - `PUT /appointments/:id`
 - Alternar o status de vacinação - `PATCH /appointments/:id/toggle-vaccinate`
 
 ## Documentação da API
