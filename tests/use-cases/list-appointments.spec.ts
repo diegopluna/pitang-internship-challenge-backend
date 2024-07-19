@@ -2,6 +2,7 @@ import { InMemoryAppointmentsRepository } from '@/repositories/in-memory/in-memo
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ListAppointmentsUseCase } from '@/use-cases/list-appointments'
 import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-mocks'
+import { createUTCDate } from '@/utils/date-utils'
 
 describe('List Appointments Use Case', () => {
   const appointmentsRepository = new InMemoryAppointmentsRepository()
@@ -12,39 +13,25 @@ describe('List Appointments Use Case', () => {
   })
 
   it('should list all appointments', async () => {
-    const date1 = new Date(
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        15,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
-    const date2 = new Date(
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        15,
-        11,
-        0,
-        0,
-        0,
-      ),
-    )
-    const date3 = new Date(
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        16,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
+    const date1 = createUTCDate({
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: 15,
+      hour: 10,
+    })
+
+    const date2 = createUTCDate({
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: 15,
+      hour: 11,
+    })
+    const date3 = createUTCDate({
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: 16,
+      hour: 10,
+    })
 
     const appointment1 = mockCreateAppointmentUseCaseInput({
       appointmentDate: date1.getTime(),

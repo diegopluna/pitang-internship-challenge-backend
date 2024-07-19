@@ -1,6 +1,7 @@
 import { Prisma, Appointment } from '@prisma/client'
 import { AppointmentsRepository } from '../appointments-repository'
 import { randomUUID } from 'node:crypto'
+import { createUTCDate } from '@/utils/date-utils'
 
 export class InMemoryAppointmentsRepository implements AppointmentsRepository {
   public static appointments: Appointment[] = []
@@ -20,29 +21,20 @@ export class InMemoryAppointmentsRepository implements AppointmentsRepository {
   }
 
   async findByDay(date: Date): Promise<Appointment[]> {
-    const utcDateDayStart = new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        0,
-        0,
-        0,
-        0,
-      ),
-    )
-
-    const utcDateDayEnd = new Date(
-      Date.UTC(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        23,
-        59,
-        59,
-        999,
-      ),
-    )
+    const utcDateDayStart = createUTCDate({
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth(),
+      day: date.getUTCDate(),
+    })
+    const utcDateDayEnd = createUTCDate({
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth(),
+      day: date.getUTCDate(),
+      hour: 23,
+      minute: 59,
+      second: 59,
+      millisecond: 999,
+    })
 
     return InMemoryAppointmentsRepository.appointments.filter((appointment) => {
       return (

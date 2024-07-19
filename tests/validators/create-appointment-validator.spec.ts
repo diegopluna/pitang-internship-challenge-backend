@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { faker } from '@faker-js/faker'
 import { createAppointmentValidator } from '@/validators/create-appointment-validator'
-import { format } from 'date-fns'
 import { mockCreateAppointmentControllerInput } from '@tests/mocks/appointments-mocks'
+import { formatDateToIsoDateString } from '@/utils/date-utils'
 
 describe('Create Appointment Validator', () => {
   it('should validate a valid input', () => {
@@ -73,7 +73,7 @@ describe('Create Appointment Validator', () => {
   it('should reject a future birthDay', () => {
     const invalidInput = {
       ...mockCreateAppointmentControllerInput(),
-      birthDay: format(faker.date.future(), 'yyyy-MM-dd'),
+      birthDay: formatDateToIsoDateString(faker.date.future()),
     }
 
     const result = createAppointmentValidator.safeParse(invalidInput)

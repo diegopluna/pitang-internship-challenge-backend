@@ -4,7 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-mocks'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { randomUUID } from 'crypto'
-import { format } from 'date-fns'
+import { createUTCDate, formatDateToIsoDateString } from '@/utils/date-utils'
+import { faker } from '@faker-js/faker'
 
 describe('Update Appointment (e2e)', () => {
   beforeAll(async () => {
@@ -28,17 +29,12 @@ describe('Update Appointment (e2e)', () => {
     const updatedData = {
       name: 'Updated Name',
       birthDay: new Date('1990-01-01').toISOString().split('T')[0],
-      appointmentDate: new Date(
-        Date.UTC(
-          new Date().getUTCFullYear(),
-          new Date().getUTCMonth(),
-          new Date().getUTCDate() + 1,
-          14,
-          0,
-          0,
-          0,
-        ),
-      ).getTime(),
+      appointmentDate: createUTCDate({
+        year: new Date().getUTCFullYear(),
+        month: new Date().getUTCMonth(),
+        day: new Date().getUTCDate() + 1,
+        hour: 14,
+      }).getTime(),
       vaccinationComplete: true,
     }
 
@@ -65,9 +61,9 @@ describe('Update Appointment (e2e)', () => {
 
   it('should return 404 when appointment is not found', async () => {
     const updatedData = {
-      name: 'Updated Name',
-      birthDay: new Date('1990-01-01').toISOString().split('T')[0],
-      appointmentDate: new Date().getTime(),
+      name: faker.person.fullName(),
+      birthDay: faker.date.birthdate().toISOString().split('T')[0],
+      appointmentDate: faker.date.future().getTime(),
       vaccinationComplete: true,
     }
 
@@ -108,18 +104,13 @@ describe('Update Appointment (e2e)', () => {
 
     const updatedData = {
       ...appointmentData,
-      birthDay: format(appointmentData.birthDay, 'yyyy-MM-dd'),
-      appointmentDate: new Date(
-        Date.UTC(
-          new Date().getUTCFullYear(),
-          new Date().getUTCMonth(),
-          new Date().getUTCDate() + 1,
-          23,
-          0,
-          0,
-          0,
-        ),
-      ).getTime(),
+      birthDay: formatDateToIsoDateString(appointmentData.birthDay),
+      appointmentDate: createUTCDate({
+        year: new Date().getUTCFullYear(),
+        month: new Date().getUTCMonth(),
+        day: new Date().getUTCDate() + 1,
+        hour: 23,
+      }).getTime(),
       vaccinationComplete: true,
     }
 
@@ -127,7 +118,6 @@ describe('Update Appointment (e2e)', () => {
       .put(`/api/appointments/${createdAppointment.id}`)
       .send(updatedData)
 
-    console.log(response.body)
     expect(response.status).toBe(400)
     expect(response.body.message).toBe(
       'Agendamentos só podem ser feitos entre 06:00 e 19:00',
@@ -137,33 +127,24 @@ describe('Update Appointment (e2e)', () => {
   it('should return 400 when max appointments per day is reached', async () => {
     const appointmentData = mockCreateAppointmentUseCaseInput()
     const date = appointmentData.appointmentDate
+
     const createdAppointment = await prisma.appointment.create({
       data: {
         ...appointmentData,
-        appointmentDate: new Date(
-          Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth() + 1,
-            14,
-            9,
-            0,
-            0,
-            0,
-          ),
-        ),
+        appointmentDate: createUTCDate({
+          year: new Date().getUTCFullYear(),
+          month: new Date().getUTCMonth() + 1,
+          day: 14,
+          hour: 9,
+        }),
       },
     })
-    const nextDay = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth() + 1,
-        15,
-        9,
-        0,
-        0,
-        0,
-      ),
-    )
+    const nextDay = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 15,
+      hour: 9,
+    })
 
     for (let i = 0; i < 20; i++) {
       date.setUTCHours(9 + Math.floor(i / 2))
@@ -178,7 +159,7 @@ describe('Update Appointment (e2e)', () => {
     nextDay.setUTCHours(20)
     const updatedData = {
       ...appointmentData,
-      birthDay: format(appointmentData.birthDay, 'yyyy-MM-dd'),
+      birthDay: formatDateToIsoDateString(appointmentData.birthDay),
       appointmentDate: nextDay.getTime(),
       vaccinationComplete: true,
     }
@@ -198,31 +179,21 @@ describe('Update Appointment (e2e)', () => {
     const createdAppointment = await prisma.appointment.create({
       data: {
         ...appointmentData,
-        appointmentDate: new Date(
-          Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth() + 1,
-            14,
-            10,
-            0,
-            0,
-            0,
-          ),
-        ),
+        appointmentDate: createUTCDate({
+          year: new Date().getUTCFullYear(),
+          month: new Date().getUTCMonth() + 1,
+          day: 14,
+          hour: 10,
+        }),
       },
     })
 
-    const nextDay = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth() + 1,
-        15,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
+    const nextDay = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 15,
+      hour: 10,
+    })
 
     for (let i = 0; i < 2; i++) {
       await prisma.appointment.create({
@@ -235,7 +206,7 @@ describe('Update Appointment (e2e)', () => {
 
     const updatedData = {
       ...appointmentData,
-      birthDay: format(appointmentData.birthDay, 'yyyy-MM-dd'),
+      birthDay: formatDateToIsoDateString(appointmentData.birthDay),
       appointmentDate: nextDay.getTime(),
       vaccinationComplete: true,
     }

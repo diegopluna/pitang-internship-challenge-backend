@@ -28,28 +28,30 @@ export class UpdateAppointmentUseCase {
       throw new ResourceNotFoundError()
     }
 
-    if (appointment.appointmentDate.getTime() !== appointmentDate.getTime()) {
-      const appointmentHour = appointmentDate.getUTCHours()
+    const appointmentHour = appointmentDate.getUTCHours()
 
-      if (appointmentHour < 9 || appointmentHour > 22) {
-        throw new AppointmentOutsideAllowedHoursError()
-      }
+    if (appointmentHour < 9 || appointmentHour > 22) {
+      throw new AppointmentOutsideAllowedHoursError()
+    }
 
-      const appointmentsWithinSameDay =
-        await this.appointmentsRepository.findByDay(appointmentDate)
+    const appointmentsWithinSameDay =
+      await this.appointmentsRepository.findByDay(appointmentDate)
 
-      if (appointmentsWithinSameDay.length >= 20) {
-        throw new MaxNumberOfAppointmentsInSameDayError()
-      }
+    const appointmentsWithinSameDayExcludingCurrentAppointment =
+      appointmentsWithinSameDay.filter((appointment) => appointment.id !== id)
 
-      const appointmentsInSameHour = appointmentsWithinSameDay.filter(
+    if (appointmentsWithinSameDayExcludingCurrentAppointment.length >= 20) {
+      throw new MaxNumberOfAppointmentsInSameDayError()
+    }
+
+    const appointmentsInSameHour =
+      appointmentsWithinSameDayExcludingCurrentAppointment.filter(
         (appointment) =>
           appointment.appointmentDate.getUTCHours() === appointmentHour,
       )
 
-      if (appointmentsInSameHour.length >= 2) {
-        throw new MaxNumberOfAppointmentsInSameHourError()
-      }
+    if (appointmentsInSameHour.length >= 2) {
+      throw new MaxNumberOfAppointmentsInSameHourError()
     }
 
     const updatedAppointment = await this.appointmentsRepository.update({
