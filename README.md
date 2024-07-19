@@ -89,7 +89,7 @@ O servidor estará disponível em `http://localhost:3000`.
 - Listar agendamentos - `GET /appointments`
 - Buscar agendamento por ID - `GET /appointments/:id`
 - Atualizar dados do agendamento - `PUT /appointments/:id`
-- Alternar o status de vacinação - `PATCH /appointments/:id/toggle-vaccinate`
+- Alternar o status de vacinação - `PATCH /appointments/:id/toggle-vaccinated`
 
 ## Documentação da API
 
