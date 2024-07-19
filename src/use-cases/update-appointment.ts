@@ -30,6 +30,7 @@ export class UpdateAppointmentUseCase {
 
     const appointmentHour = appointmentDate.getUTCHours()
 
+    // Comparing with UTC time, which is 06:00 and 19:00 in Brazil
     if (appointmentHour < 9 || appointmentHour > 22) {
       throw new AppointmentOutsideAllowedHoursError()
     }
@@ -37,6 +38,7 @@ export class UpdateAppointmentUseCase {
     const appointmentsWithinSameDay =
       await this.appointmentsRepository.findByDay(appointmentDate)
 
+    // Excluding the current appointment since it is already there and could move to another time in the same day without violating the rules
     const appointmentsWithinSameDayExcludingCurrentAppointment =
       appointmentsWithinSameDay.filter((appointment) => appointment.id !== id)
 
