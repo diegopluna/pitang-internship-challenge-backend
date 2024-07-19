@@ -6,6 +6,7 @@ import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-err
 import { AppointmentOutsideAllowedHoursError } from '@/use-cases/errors/appointment-outside-allowed-hours-error'
 import { MaxNumberOfAppointmentsInSameDayError } from '@/use-cases/errors/max-number-of-appointments-in-same-day-error'
 import { MaxNumberOfAppointmentsInSameHourError } from '@/use-cases/errors/max-number-of-appointments-in-same-hour'
+import { createUTCDate } from '@/utils/date-utils'
 
 describe('Update Appointment Use Case', () => {
   const appointmentsRepository = new InMemoryAppointmentsRepository()
@@ -24,17 +25,12 @@ describe('Update Appointment Use Case', () => {
       id: createdAppointment.id,
       name: 'Updated Name',
       birthDay: new Date('1990-01-01'),
-      appointmentDate: new Date(
-        Date.UTC(
-          new Date().getUTCFullYear(),
-          new Date().getUTCMonth(),
-          new Date().getUTCDate() + 1,
-          14,
-          0,
-          0,
-          0,
-        ),
-      ),
+      appointmentDate: createUTCDate({
+        year: new Date().getUTCFullYear(),
+        month: new Date().getUTCMonth(),
+        day: new Date().getUTCDate() + 1,
+        hour: 14,
+      }),
       vaccinationComplete: true,
     }
 
@@ -64,17 +60,12 @@ describe('Update Appointment Use Case', () => {
 
     const updatedData = {
       ...createdAppointment,
-      appointmentDate: new Date(
-        Date.UTC(
-          new Date().getUTCFullYear(),
-          new Date().getUTCMonth(),
-          new Date().getUTCDate() + 1,
-          23,
-          0,
-          0,
-          0,
-        ),
-      ),
+      appointmentDate: createUTCDate({
+        year: new Date().getUTCFullYear(),
+        month: new Date().getUTCMonth(),
+        day: new Date().getUTCDate() + 1,
+        hour: 23,
+      }),
     }
 
     await expect(() => sut.execute(updatedData)).rejects.toBeInstanceOf(
@@ -86,50 +77,35 @@ describe('Update Appointment Use Case', () => {
     for (let i = 0; i < 20; i++) {
       await appointmentsRepository.create(
         mockCreateAppointmentUseCaseInput({
-          appointmentDate: new Date(
-            Date.UTC(
-              new Date().getUTCFullYear(),
-              new Date().getUTCMonth() + 1,
-              15,
-              9 + Math.floor(i / 2),
-              0,
-              0,
-              0,
-            ),
-          ).getTime(),
+          appointmentDate: createUTCDate({
+            year: new Date().getUTCFullYear(),
+            month: new Date().getUTCMonth() + 1,
+            day: 15,
+            hour: 9 + Math.floor(i / 2),
+          }).getTime(),
         }),
       )
     }
 
     const appointmentToUpdate = mockCreateAppointmentUseCaseInput({
-      appointmentDate: new Date(
-        Date.UTC(
-          new Date().getUTCFullYear(),
-          new Date().getUTCMonth() + 1,
-          14,
-          10,
-          0,
-          0,
-          0,
-        ),
-      ).getTime(),
+      appointmentDate: createUTCDate({
+        year: new Date().getUTCFullYear(),
+        month: new Date().getUTCMonth() + 1,
+        day: 14,
+        hour: 10,
+      }).getTime(),
     })
     const createdAppointment =
       await appointmentsRepository.create(appointmentToUpdate)
 
     const updatedData = {
       ...createdAppointment,
-      appointmentDate: new Date(
-        Date.UTC(
-          new Date().getUTCFullYear(),
-          new Date().getUTCMonth() + 1,
-          15,
-          10,
-          0,
-          0,
-          0,
-        ),
-      ),
+      appointmentDate: createUTCDate({
+        year: new Date().getUTCFullYear(),
+        month: new Date().getUTCMonth() + 1,
+        day: 15,
+        hour: 10,
+      }),
     }
 
     await expect(() => sut.execute(updatedData)).rejects.toBeInstanceOf(
@@ -138,17 +114,12 @@ describe('Update Appointment Use Case', () => {
   })
 
   it('should throw MaxNumberOfAppointmentsInSameHourError if new time exceeds hourly limit', async () => {
-    const baseDate = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth(),
-        new Date().getUTCDate() + 1,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
+    const baseDate = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth(),
+      day: new Date().getUTCDate() + 1,
+      hour: 10,
+    })
 
     for (let i = 0; i < 2; i++) {
       await appointmentsRepository.create(

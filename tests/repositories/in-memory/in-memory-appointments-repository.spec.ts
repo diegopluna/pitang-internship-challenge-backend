@@ -4,7 +4,7 @@ import {
   mockCreateAppointmentInput,
   mockCreateAppointmentUseCaseInput,
 } from '@tests/mocks/appointments-mocks'
-import { addDays } from 'date-fns'
+import { addDaysToDate, createUTCDate } from '@/utils/date-utils'
 
 describe('In-Memory Appointments Repository', () => {
   const sut = new InMemoryAppointmentsRepository()
@@ -28,7 +28,7 @@ describe('In-Memory Appointments Repository', () => {
       appointmentDate: appointment1.appointmentDate.getTime(),
     })
     const appointment3 = mockCreateAppointmentUseCaseInput({
-      appointmentDate: addDays(appointment1.appointmentDate, 1).getTime(),
+      appointmentDate: addDaysToDate(appointment1.appointmentDate, 1).getTime(),
     })
 
     const createdAppointment1 = await sut.create(appointment1)
@@ -65,39 +65,24 @@ describe('In-Memory Appointments Repository', () => {
   })
 
   it('should return appointments sorted by appointmentDate', async () => {
-    const date1 = new Date(
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        15,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
-    const date2 = new Date(
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        16,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
-    const date3 = new Date(
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        17,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
+    const date1 = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 15,
+      hour: 10,
+    })
+    const date2 = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 16,
+      hour: 10,
+    })
+    const date3 = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 17,
+      hour: 10,
+    })
 
     const appointment1 = mockCreateAppointmentUseCaseInput({
       appointmentDate: date2.getTime(),

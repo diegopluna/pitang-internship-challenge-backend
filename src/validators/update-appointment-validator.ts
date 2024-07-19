@@ -1,4 +1,11 @@
-import { fromUnixTime, isBefore, isValid, parseISO } from 'date-fns'
+import {
+  isIsoDateFormat,
+  isIsoDateStringBeforeCurrentDate,
+  isIsoDateStringValid,
+  isTimestampValid,
+  newUTCDateFromIsoDateString,
+  newUTCDateFromTimestamp,
+} from '@/utils/date-utils'
 import { FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -14,8 +21,7 @@ export const updateAppointmentValidator = z.object({
     .string()
     .refine(
       (dateStr) => {
-        const regex = /^\d{4}-\d{2}-\d{2}$/
-        return regex.test(dateStr)
+        return isIsoDateFormat(dateStr)
       },
       {
         message:
@@ -24,9 +30,7 @@ export const updateAppointmentValidator = z.object({
     )
     .refine(
       (dateStr) => {
-        const date = parseISO(dateStr)
-
-        return isValid(date)
+        return isIsoDateStringValid(dateStr)
       },
       {
         message: 'Data de aniversário inválida. Formato esperado: YYYY-MM-DD',
@@ -34,20 +38,14 @@ export const updateAppointmentValidator = z.object({
     )
     .refine(
       (dateStr) => {
-        const date = parseISO(dateStr)
-
-        return isBefore(date, new Date())
+        return isIsoDateStringBeforeCurrentDate(dateStr)
       },
       {
         message: 'A data de aniversário deve ser anterior à data atual.',
       },
     )
     .transform((dateStr) => {
-      const date = parseISO(dateStr)
-
-      return new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
-      )
+      return newUTCDateFromIsoDateString(dateStr)
     }),
   appointmentDate: z
     .number({
@@ -57,8 +55,7 @@ export const updateAppointmentValidator = z.object({
     })
     .refine(
       (timestamp) => {
-        const date = fromUnixTime(timestamp / 1000)
-        return isValid(date)
+        return isTimestampValid(timestamp)
       },
       {
         message:
@@ -66,19 +63,7 @@ export const updateAppointmentValidator = z.object({
       },
     )
     .transform((timestamp) => {
-      const date = new Date(timestamp)
-      const utcDate = new Date(
-        Date.UTC(
-          date.getUTCFullYear(),
-          date.getUTCMonth(),
-          date.getUTCDate(),
-          date.getUTCHours(),
-          0,
-          0,
-          0,
-        ),
-      )
-      return utcDate
+      return newUTCDateFromTimestamp(timestamp)
     }),
   vaccinationComplete: z.boolean({
     required_error: 'VaccinationComplete é obrigatório',

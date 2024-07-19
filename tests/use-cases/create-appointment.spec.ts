@@ -5,6 +5,7 @@ import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-moc
 import { AppointmentOutsideAllowedHoursError } from '@/use-cases/errors/appointment-outside-allowed-hours-error'
 import { MaxNumberOfAppointmentsInSameDayError } from '@/use-cases/errors/max-number-of-appointments-in-same-day-error'
 import { MaxNumberOfAppointmentsInSameHourError } from '@/use-cases/errors/max-number-of-appointments-in-same-hour'
+import { createUTCDate } from '@/utils/date-utils'
 
 describe('Create Appointment Use Case', () => {
   const appointmentsRepository = new InMemoryAppointmentsRepository()
@@ -23,17 +24,15 @@ describe('Create Appointment Use Case', () => {
 
   it('should not create an appointment before 6amBRT(9am UTC)', async () => {
     const data = mockCreateAppointmentUseCaseInput()
-    data.appointmentDate = new Date(
-      Date.UTC(
-        data.appointmentDate.getUTCFullYear(),
-        data.appointmentDate.getUTCMonth(),
-        data.appointmentDate.getUTCDate(),
-        8,
-        0,
-        0,
-        0,
-      ),
-    )
+    data.appointmentDate = createUTCDate({
+      year: data.appointmentDate.getUTCFullYear(),
+      month: data.appointmentDate.getUTCMonth(),
+      day: data.appointmentDate.getUTCDate(),
+      hour: 8,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    })
 
     await expect(() => sut.execute(data)).rejects.toBeInstanceOf(
       AppointmentOutsideAllowedHoursError,
@@ -42,17 +41,15 @@ describe('Create Appointment Use Case', () => {
 
   it('should not create an appointment after 7pmBRT(10pm UTC)', async () => {
     const data = mockCreateAppointmentUseCaseInput()
-    data.appointmentDate = new Date(
-      Date.UTC(
-        data.appointmentDate.getUTCFullYear(),
-        data.appointmentDate.getUTCMonth(),
-        data.appointmentDate.getUTCDate(),
-        23, // 11pm UTC
-        0,
-        0,
-        0,
-      ),
-    )
+    data.appointmentDate = createUTCDate({
+      year: data.appointmentDate.getUTCFullYear(),
+      month: data.appointmentDate.getUTCMonth(),
+      day: data.appointmentDate.getUTCDate(),
+      hour: 23,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+    })
 
     await expect(() => sut.execute(data)).rejects.toBeInstanceOf(
       AppointmentOutsideAllowedHoursError,
@@ -62,31 +59,24 @@ describe('Create Appointment Use Case', () => {
   it('should not create more than 20 appointments in a day', async () => {
     for (let i = 1; i <= 20; i++) {
       const data = mockCreateAppointmentUseCaseInput({
-        appointmentDate: new Date(
-          Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth() + 1,
-            15,
-            9 + Math.floor(i / 2),
-            0,
-            0,
-            0,
-          ),
-        ).getTime(),
+        appointmentDate: createUTCDate({
+          year: new Date().getUTCFullYear(),
+          month: new Date().getUTCMonth() + 1,
+          day: 15,
+          hour: 9 + Math.floor(i / 2),
+        }).getTime(),
       })
       await sut.execute(data)
     }
 
     await expect(() => {
       const newData = mockCreateAppointmentUseCaseInput({
-        appointmentDate: new Date(
-          Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth() + 1,
-            15,
-            18,
-          ),
-        ).getTime(),
+        appointmentDate: createUTCDate({
+          year: new Date().getUTCFullYear(),
+          month: new Date().getUTCMonth() + 1,
+          day: 15,
+          hour: 18,
+        }).getTime(),
       })
       return sut.execute(newData)
     }).rejects.toBeInstanceOf(MaxNumberOfAppointmentsInSameDayError)
@@ -95,32 +85,24 @@ describe('Create Appointment Use Case', () => {
   it('should not create more than 2 appointments in the same hour', async () => {
     for (let i = 1; i <= 2; i++) {
       const data = mockCreateAppointmentUseCaseInput({
-        appointmentDate: new Date(
-          Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth() + 1,
-            15,
-            14,
-            0,
-            0,
-          ),
-        ).getTime(),
+        appointmentDate: createUTCDate({
+          year: new Date().getUTCFullYear(),
+          month: new Date().getUTCMonth() + 1,
+          day: 15,
+          hour: 14,
+        }).getTime(),
       })
       await sut.execute(data)
     }
 
     await expect(() => {
       const newData = mockCreateAppointmentUseCaseInput({
-        appointmentDate: new Date(
-          Date.UTC(
-            new Date().getUTCFullYear(),
-            new Date().getUTCMonth() + 1,
-            15,
-            14,
-            0,
-            0,
-          ),
-        ).getTime(),
+        appointmentDate: createUTCDate({
+          year: new Date().getUTCFullYear(),
+          month: new Date().getUTCMonth() + 1,
+          day: 15,
+          hour: 14,
+        }).getTime(),
       })
       return sut.execute(newData)
     }).rejects.toBeInstanceOf(MaxNumberOfAppointmentsInSameHourError)

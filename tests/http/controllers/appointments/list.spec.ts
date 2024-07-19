@@ -3,6 +3,7 @@ import { app } from '@/app'
 import { prisma } from '@/lib/prisma'
 import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-mocks'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { createUTCDate } from '@/utils/date-utils'
 
 describe('List Appointments (e2e)', () => {
   beforeAll(async () => {
@@ -18,39 +19,24 @@ describe('List Appointments (e2e)', () => {
   })
 
   it('should list appointments grouped by date and hour', async () => {
-    const date1 = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth() + 1,
-        15,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
-    const date2 = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth() + 1,
-        15,
-        11,
-        0,
-        0,
-        0,
-      ),
-    )
-    const date3 = new Date(
-      Date.UTC(
-        new Date().getUTCFullYear(),
-        new Date().getUTCMonth() + 1,
-        16,
-        10,
-        0,
-        0,
-        0,
-      ),
-    )
+    const date1 = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 15,
+      hour: 10,
+    })
+    const date2 = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 15,
+      hour: 11,
+    })
+    const date3 = createUTCDate({
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth() + 1,
+      day: 16,
+      hour: 10,
+    })
 
     const appointment1 = mockCreateAppointmentUseCaseInput({
       appointmentDate: date1.getTime(),
