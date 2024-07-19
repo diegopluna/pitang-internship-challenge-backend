@@ -5,6 +5,7 @@ import { mockCreateAppointmentUseCaseInput } from '@tests/mocks/appointments-moc
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { randomUUID } from 'crypto'
 import { createUTCDate, formatDateToIsoDateString } from '@/utils/date-utils'
+import { faker } from '@faker-js/faker'
 
 describe('Update Appointment (e2e)', () => {
   beforeAll(async () => {
@@ -60,9 +61,9 @@ describe('Update Appointment (e2e)', () => {
 
   it('should return 404 when appointment is not found', async () => {
     const updatedData = {
-      name: 'Updated Name',
-      birthDay: new Date('1990-01-01').toISOString().split('T')[0],
-      appointmentDate: new Date().getTime(),
+      name: faker.person.fullName(),
+      birthDay: faker.date.birthdate().toISOString().split('T')[0],
+      appointmentDate: faker.date.future().getTime(),
       vaccinationComplete: true,
     }
 
