@@ -81,7 +81,7 @@ O servidor estará disponível em `http://localhost:3000`.
 - [PostgreSQL](https://www.postgresql.org/) (via Docker) - Banco de dados
 - [Vitest](https://vitest.dev/) (v1.6.0) - Testes
 - [SuperTest](https://github.com/visionmedia/supertest) (v7.0.0) - Testes E2E
-- [Swagger](https://swagger.io/) (v3.52.3) - Documentação da API
+- [Scalar](https://scalar.com/) - UI para documentação da API
 
 ## Funcionalidades
 
